@@ -48,12 +48,14 @@ var clipsnailDoc = clipsnailFrame.contentDocument;
 
 var targetHighlight = clipsnailDoc.createElement('div');
 targetHighlight.style.borderColor = 'rgba(0,0,0,0.1)';
+targetHighlight.style.borderStyle = 'solid';
 targetHighlight.style.position = "absolute";
 targetHighlight.style.top = 0;
 targetHighlight.style.left = 0;
 targetHighlight.style.height = 0;
 targetHighlight.style.width = window.innerWidth;
 targetHighlight.style.borderBottomWidth = window.innerHeight;
+clipsnailDoc.body.style.overflow = 'hidden';
 clipsnailDoc.body.appendChild(targetHighlight);
 
 // Creates an iframe for the content of the clip that will be posted
@@ -138,16 +140,33 @@ function addElementToClip(elem) {
 
 // Visually highlight a target element.
 function changeTarget(elem) {
-  var scrollTop = elem.offsetTop - window.scrollY;
-  var scrollLeft = elem.offsetLeft - window.scrollX;
-  var scrollBottom = scrollTop + elem.offsetHeight;
-  var scrollRight = scrollBottom + elem.offsetWidth;
-  targetHighlight.style.height = elem.offsetHeight;
-  targetHighlight.style.width = elem.offsetWidth;
+  var scrollTop = 0;
+  var scrollLeft = 0;
+  var offsetNode = elem;
+  while(offsetNode){
+    scrollTop += offsetNode.offsetTop;
+    scrollLeft += offsetNode.offsetLeft;
+    offsetNode = offsetNode.offsetParent;
+  }
+
+  scrollTop = Math.max(scrollTop - window.scrollY, 0);
+  scrollLeft = Math.max(scrollLeft - window.scrollX, 0);
+  var scrollBottom = Math.min(
+    scrollTop + elem.offsetHeight, window.innerHeight);
+  var scrollRight = Math.min(
+    scrollLeft + elem.offsetWidth, window.innerWidth);
+  var highlightHeight = Math.min(
+    elem.offsetHeight, window.innerHeight - scrollTop);
+  var highlightWidth = Math.min(
+    elem.offsetWidth, window.innerWidth - scrollLeft);
+  targetHighlight.style.height = highlightHeight;
+  targetHighlight.style.width = highlightWidth;
   targetHighlight.style.borderTopWidth = scrollTop;
   targetHighlight.style.borderLeftWidth = scrollLeft;
-  targetHighlight.style.borderBottomWidth = window.innerHeight - scrollBottom;
-  targetHighlight.style.borderRightWidth = window.innerWidth - scrollRight;
+  targetHighlight.style.borderBottomWidth =
+    window.innerHeight - scrollTop - highlightHeight;
+  targetHighlight.style.borderRightWidth =
+    window.innerWidth - scrollLeft - highlightWidth;
 }
 
 function compileClip(){
