@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Clipsnail Clipper",
-  "description": "Extension to grab content from pages and upload it to clipsnail.com.",
+  "description": "Grab content from pages and upload it to clipsnail.com.",
   "version": "0.1.0",
 
   "icons": { "16": "icon.png",
@@ -10,18 +10,18 @@
             "128": "icon@8x.png" },
 
   "permissions": [
-    "*://*/*"
+    "activeTab"
   ],
-  
+
   "background": {
-    "persistent": false,
-    "scripts": ["bg.js"]
+    "scripts": ["background.js"],
+    "persistent": false
   },
-  
+
   "web_accessible_resources": [
     "clipper.css"
   ],
-  
+
   "options_page": "options.html",
 
   "browser_action": {

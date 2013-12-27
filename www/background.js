@@ -4,5 +4,5 @@
 chrome.browserAction.onClicked.addListener(function callback(tab){
   //TODO: The clipper needs to somehow be unloaded when
   //clicking the button again
-  chrome.tabs.executeScript(null, {file: "clipper.js"});
+  chrome.tabs.executeScript({file: "clipper.js"});
 });
